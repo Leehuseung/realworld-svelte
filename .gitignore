@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /dist
+/public/build
 
 # IDEs and editors
 /.idea
