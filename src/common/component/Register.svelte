@@ -5,7 +5,7 @@
             <div class="col-md-6 offset-md-3 col-xs-12">
                 <h1 class="text-xs-center">Sign up</h1>
                 <p class="text-xs-center">
-                    <a href="">Have an account?</a>
+                    <a href="{null}">Have an accouxnt?</a>
                 </p>
 <!-- validation시에 나오는 메세지 -->
 <!--                <ul class="error-messages">-->
