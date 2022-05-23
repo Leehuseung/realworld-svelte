@@ -1,3 +1,23 @@
+<script>
+    import { user } from "../js/store";
+    import { useNavigate } from "svelte-navigator";
+    import { currentMenu } from "../js/store";
+
+    const navigate = useNavigate();
+
+    let username;
+    let password;
+
+    function login() {
+        $user = { username, password };
+        currentMenu.update(() => 'home');
+        navigate("/", {
+            replace: true,
+        });
+    }
+
+</script>
+
 <div class="auth-page">
     <div class="container page">
         <div class="row">
@@ -15,7 +35,7 @@
                     <fieldset class="form-group">
                         <input class="form-control form-control-lg" type="password" placeholder="Password">
                     </fieldset>
-                    <button class="btn btn-lg btn-primary pull-xs-right">
+                    <button on:click={login} class="btn btn-lg btn-primary pull-xs-right">
                         Sign in
                     </button>
                 </form>
