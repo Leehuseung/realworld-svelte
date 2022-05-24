@@ -1,3 +1,9 @@
+<script>
+    import { currentMenu} from "../../common/js/store";
+
+    $currentMenu = 'editor';
+</script>
+
 <div class="editor-page">
     <div class="container page">
         <div class="row">

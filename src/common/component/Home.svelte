@@ -1,3 +1,9 @@
+<script>
+    import { currentMenu } from "../js/store";
+
+    $currentMenu = 'home';
+</script>
+
 <div class="home-page">
 
     <div class="banner">

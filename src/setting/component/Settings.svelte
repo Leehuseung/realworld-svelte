@@ -1,3 +1,8 @@
+<script>
+    import {currentMenu} from "../../common/js/store";
+
+    $currentMenu = 'settings';
+</script>
 
 <div class="settings-page">
     <div class="container page">

@@ -16,7 +16,6 @@
                 <a href="/"
                    use:link class="nav-link active"
                    class:active={$currentMenu == 'home'}
-                   on:click={() => currentMenu.update(() => 'home')}
                 >Home</a>
             </li>
 
@@ -25,7 +24,6 @@
                     <a href="/editor"
                        use:link class="nav-link"
                        class:active={$currentMenu == 'editor'}
-                       on:click={() => currentMenu.update(() => 'editor')}
                     >
                         <i class="ion-compose"></i>&nbsp;New Article
                     </a>
@@ -34,7 +32,6 @@
                     <a href="/settings"
                        use:link class="nav-link"
                        class:active={$currentMenu == 'settings'}
-                       on:click={() => currentMenu.update(() => 'settings')}
                     >
                         <i class="ion-gear-a"></i>&nbsp;Settings
                     </a>
@@ -43,22 +40,19 @@
                     <a href="/@profile"
                        use:link class="nav-link"
                        class:active={$currentMenu == '@profile'}
-                       on:click={() => currentMenu.update(() => '@profile')}
                     >profile</a>
                 </li>
             {:else }
                 <li class="nav-item" >
                     <a href="/login"
                        use:link class="nav-link"
-                       class:active={$currentMenu == 'signIn'}
-                       on:click={() => currentMenu.update(() => 'signIn')}
+                       class:active={$currentMenu == 'login'}
                     >Sign in</a>
                 </li>
                 <li class="nav-item">
                     <a href="/register"
                        use:link class="nav-link"
-                       class:active={$currentMenu == 'signOut'}
-                       on:click={() => currentMenu.update(() => 'signOut')}
+                       class:active={$currentMenu == 'register'}
                     >Sign up</a>
                 </li>
             {/if}

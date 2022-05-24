@@ -1,3 +1,9 @@
+<script>
+    import { currentMenu } from "../js/store";
+
+    $currentMenu = '@profile';
+</script>
+
 <div class="profile-page">
 
     <div class="user-info">
