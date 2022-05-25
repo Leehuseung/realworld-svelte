@@ -10,6 +10,7 @@
     import EditArticle from "./article/component/EditArticle.svelte";
     import Profile from "./common/component/Profile.svelte";
 
+    import { user} from "./common/js/store";
 
 </script>
 
@@ -20,13 +21,15 @@
         <Route path="/">
             <Home />
         </Route>
-        <Route path="/editor" component="{EditArticle}" />
-        <Route path="/settings" component="{Settings}" />
-        <Route path="/register" component="{Register}" />
-        <Route path="/@profile" component="{Profile}" />
-        <Route path="/login" component="{Login}" />
-
-        <Route component={PageNotFound} />
+        {#if $user}
+            <Route path="/editor" component="{EditArticle}" />
+            <Route path="/settings" component="{Settings}" />
+            <Route path="/@profile" component="{Profile}" />
+        {:else }
+            <Route path="/register" component="{Register}" />
+            <Route path="/login" component="{Login}" />
+            <Route component={PageNotFound} />
+        {/if}
     </div>
 </Router>
 
