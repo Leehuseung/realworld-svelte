@@ -3,19 +3,36 @@
     import { link,useNavigate } from "svelte-navigator";
     import { currentMenu } from "../js/store";
 
+    const navigate = useNavigate();
     $currentMenu = 'login';
 
-    const navigate = useNavigate();
+    let email = '';
+    let password = '';
+    let errorHtml = '';
 
-    let username;
-    let password;
+    let login = function (){
+        if(loginValidation()){
+            $user = { email, password };
+            currentMenu.update(() => 'home');
+            navigate("/", {
+                replace: true,
+            });
+        }
+    }
 
-    function login() {
-        $user = { username, password };
-        currentMenu.update(() => 'home');
-        navigate("/", {
-            replace: true,
-        });
+    let loginValidation = function() {
+        if(email === ''){
+            errorHtml = '<li>email can\'t be blank</li>';
+            return false;
+        } else if(password === '') {
+            errorHtml = '<li>password can\'t be blank</li>';
+            return false;
+        }
+        // 비밀번호 맞지 않을경우
+        // else if(){
+        //     validateHtml = '<li>email or password is invalid</li>';
+        // }
+        return true;
     }
 
 </script>
@@ -30,15 +47,17 @@
                     <a href="/register" use:link
                     >Need an account?</a>
                 </p>
-
+                <ul class="error-messages">
+                    {@html errorHtml}
+                </ul>
                 <form>
                     <fieldset class="form-group">
-                        <input class="form-control form-control-lg" type="text" placeholder="Email">
+                        <input bind:value={email} class="form-control form-control-lg" type="text" placeholder="Email" >
                     </fieldset>
                     <fieldset class="form-group">
-                        <input class="form-control form-control-lg" type="password" placeholder="Password">
+                        <input bind:value={password} class="form-control form-control-lg" type="password" placeholder="Password">
                     </fieldset>
-                    <button on:click={login} class="btn btn-lg btn-primary pull-xs-right">
+                    <button on:click={login} type="button" class="btn btn-lg btn-primary pull-xs-right">
                         Sign in
                     </button>
                 </form>
