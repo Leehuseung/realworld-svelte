@@ -9,8 +9,13 @@
     import Settings from "./setting/component/Settings.svelte";
     import EditArticle from "./article/component/EditArticle.svelte";
     import Profile from "./common/component/Profile.svelte";
-
+    import axios from "axios";
     import { user} from "./common/js/store";
+
+    //axios 기본 설정
+    axios.defaults.baseURL = 'http://localhost:8070';
+    axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+    axios.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
 
 </script>
 
