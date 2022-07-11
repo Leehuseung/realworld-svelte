@@ -4,8 +4,8 @@
     import Footer from "./common/component/Footer.svelte";
     import Home from "./common/component/Home.svelte";
     import PageNotFound from "./common/component/PageNotFound.svelte";
-    import Register from "./common/component/Register.svelte";
-    import Login from "./common/component/Login.svelte";
+    import Register from "./login/component/Register.svelte";
+    import Login from "./login/component/Login.svelte";
     import Settings from "./setting/component/Settings.svelte";
     import EditArticle from "./article/component/EditArticle.svelte";
     import Profile from "./common/component/Profile.svelte";

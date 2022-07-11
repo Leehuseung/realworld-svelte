@@ -1,7 +1,7 @@
 <script>
-    import { user } from "../js/store";
+    import { user } from "../../common/js/store";
     import { link,useNavigate } from "svelte-navigator";
-    import { currentMenu } from "../js/store";
+    import { currentMenu } from "../../common/js/store";
 
     const navigate = useNavigate();
     $currentMenu = 'login';
@@ -12,7 +12,7 @@
 
     let login = function (){
         if(loginValidation()){
-            $user = { email, password };
+            // $user = { email, password };
             currentMenu.update(() => 'home');
             navigate("/", {
                 replace: true,
@@ -40,7 +40,6 @@
 <div class="auth-page">
     <div class="container page">
         <div class="row">
-
             <div class="col-md-6 offset-md-3 col-xs-12">
                 <h1 class="text-xs-center">Sign in</h1>
                 <p class="text-xs-center">
@@ -62,7 +61,6 @@
                     </button>
                 </form>
             </div>
-
         </div>
     </div>
 </div>

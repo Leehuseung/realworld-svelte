@@ -1,7 +1,8 @@
 <script>
     import { link,useNavigate  } from "svelte-navigator";
-    import {currentMenu, user} from "../js/store";
+    import {currentMenu, user} from "../../common/js/store";
     import axios from "axios";
+    import {login} from "../js/login";
 
     const navigate = useNavigate();
     $currentMenu = 'register';
@@ -47,7 +48,7 @@
         } else if(password === '') {
             errorHtml = '<li>password can\'t be blank</li>';
             return false;
-        } else if(!validateEmail(email)){
+        } else if(!login.validateEmail(email)){
             errorHtml = '<li>email is invalid</li>';
             return false;
         }
@@ -55,15 +56,7 @@
         return true;
     }
 
-    let validateEmail = function(email) {
-        return email == '' || String(email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            );
-    }
-
-    $: if(validateEmail(email)){
+    $: if(login.validateEmail(email)){
         emailValidateStyle = null;
     } else {
         emailValidateStyle = 'red';
@@ -75,7 +68,6 @@
 <div class="auth-page">
     <div class="container page">
         <div class="row">
-
             <div class="col-md-6 offset-md-3 col-xs-12">
                 <h1 class="text-xs-center">Sign up</h1>
                 <p class="text-xs-center">
@@ -85,7 +77,6 @@
                 <ul class="error-messages">
                     {@html errorHtml}
                 </ul>
-
                 <form>
                     <fieldset class="form-group">
                         <input bind:value={username} class="form-control form-control-lg" type="text" placeholder="Your Name">
@@ -101,7 +92,6 @@
                     </button>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
