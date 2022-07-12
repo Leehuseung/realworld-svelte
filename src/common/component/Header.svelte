@@ -2,16 +2,30 @@
     import { link } from "svelte-navigator";
     import { user } from "../js/store";
     import { currentMenu } from "../js/store";
+    import axios from "axios";
+
+    let username = '';
 
     //로그인 상태 처리
     if(window.localStorage.getItem('jwtToken') != null){
+        let token = window.localStorage.getItem("jwtToken");
         $user = {
-            'jwtToken' : window.localStorage.getItem("jwtToken")
+            'jwtToken' : token
         };
+
+        axios.get('/api/user', {
+            headers: {
+                Authorization: 'Token ' + token
+            }
+        }).then(res => {
+            username = res.data.user.username;
+        }).catch(err => {
+            console.log(err);
+        });
+
     } else {
         $user = null;
     }
-
 </script>
 
 <nav class="navbar navbar-light">
@@ -50,7 +64,7 @@
                     <a href="/@profile"
                        use:link class="nav-link"
                        class:active={$currentMenu == '@profile'}
-                    >profile</a>
+                    >{username}</a>
                 </li>
             {:else }
                 <li class="nav-item" >
