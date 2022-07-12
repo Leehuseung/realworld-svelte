@@ -2,6 +2,16 @@
     import { link } from "svelte-navigator";
     import { user } from "../js/store";
     import { currentMenu } from "../js/store";
+
+    //로그인 상태 처리
+    if(window.localStorage.getItem('jwtToken') != null){
+        $user = {
+            'jwtToken' : window.localStorage.getItem("jwtToken")
+        };
+    } else {
+        $user = null;
+    }
+
 </script>
 
 <nav class="navbar navbar-light">

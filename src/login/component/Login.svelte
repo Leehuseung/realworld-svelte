@@ -2,6 +2,8 @@
     import { user } from "../../common/js/store";
     import { link,useNavigate } from "svelte-navigator";
     import { currentMenu } from "../../common/js/store";
+    import {login} from "../js/login";
+    import axios from "axios";
 
     const navigate = useNavigate();
     $currentMenu = 'login';
@@ -9,13 +11,30 @@
     let email = '';
     let password = '';
     let errorHtml = '';
+    let emailValidateStyle = '';
 
-    let login = function (){
+    let loginCheck = function (){
         if(loginValidation()){
-            // $user = { email, password };
-            currentMenu.update(() => 'home');
-            navigate("/", {
-                replace: true,
+
+            axios.post('/api/users/login',JSON.stringify({
+                'user' : {
+                    'email' : email,
+                    'password' : password
+                }
+            }))
+            .then(res => {
+                currentMenu.update(() => 'home');
+                navigate("/", {
+                    replace: true,
+                });
+                window.localStorage.setItem("jwtToken",res.data.user.token);
+                $user = {
+                    'jwtToken' : window.localStorage.getItem("jwtToken")
+                };
+
+            }).catch(error => {
+                let data = error.response.data.errors;
+                errorHtml =  `<li>${data}</li>`;
             });
         }
     }
@@ -27,12 +46,18 @@
         } else if(password === '') {
             errorHtml = '<li>password can\'t be blank</li>';
             return false;
+        } else if(!login.validateEmail(email)){
+            errorHtml = '<li>email is invalid</li>';
+            return false;
         }
-        // 비밀번호 맞지 않을경우
-        // else if(){
-        //     validateHtml = '<li>email or password is invalid</li>';
-        // }
+
         return true;
+    }
+
+    $: if(login.validateEmail(email)){
+        emailValidateStyle = null;
+    } else {
+        emailValidateStyle = 'red';
     }
 
 </script>
@@ -51,12 +76,12 @@
                 </ul>
                 <form>
                     <fieldset class="form-group">
-                        <input bind:value={email} class="form-control form-control-lg" type="text" placeholder="Email" >
+                        <input bind:value={email} class="form-control form-control-lg" type="text" placeholder="Email" style:border-color="{emailValidateStyle}">
                     </fieldset>
                     <fieldset class="form-group">
                         <input bind:value={password} class="form-control form-control-lg" type="password" placeholder="Password">
                     </fieldset>
-                    <button on:click={login} type="button" class="btn btn-lg btn-primary pull-xs-right">
+                    <button on:click={loginCheck} type="button" class="btn btn-lg btn-primary pull-xs-right">
                         Sign in
                     </button>
                 </form>
