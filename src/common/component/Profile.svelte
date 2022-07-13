@@ -1,7 +1,30 @@
 <script>
     import { currentMenu } from "../js/store";
+    import { useParams } from "svelte-navigator";
+    import axios from "axios";
 
     $currentMenu = '@profile';
+
+    const params = useParams();
+
+    let username = $params.username;
+    let token = window.localStorage.getItem("jwtToken");
+    let profile = {
+        'username' : null,
+        'image' : null,
+        'bio' : null,
+        'following' : null,
+    }
+
+
+    axios.get('/api/profiles/' + username).then(res => {
+        profile = res.data.profile;
+    }).catch(err => {
+        console.log(err);
+    });
+
+    // alert($params.username);
+
 </script>
 
 <div class="profile-page">
@@ -11,11 +34,10 @@
             <div class="row">
 
                 <div class="col-xs-12 col-md-10 offset-md-1">
-                    <img src="http://i.imgur.com/Qr71crq.jpg" alt="" class="user-img"/>
-                    <h4>Eric Simons</h4>
+                    <img src={profile.image} alt="" class="user-img"/>
+                    <h4>{profile.username}</h4>
                     <p>
-                        Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from the
-                        Hunger Games
+                        {profile.bio}
                     </p>
                     <button class="btn btn-sm btn-outline-secondary action-btn">
                         <i class="ion-plus-round"></i>
