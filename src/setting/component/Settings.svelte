@@ -3,11 +3,14 @@
     import { useNavigate } from "svelte-navigator";
     import { user } from "../../common/js/store";
     import axios from "axios";
+    import {login} from "../../login/js/login";
     let token = window.localStorage.getItem("jwtToken");
     const navigate = useNavigate();
 
-    $currentMenu = 'settings';
+    let formDisabled = false;
 
+    $currentMenu = 'settings';
+    let emailValidateStyle = '';
     let bodyUser = {
         'username' : null,
         'email' : null,
@@ -24,18 +27,22 @@
     });
 
     let updateSetting = () => {
-        axios.put('/api/user',JSON.stringify({
-            'user': bodyUser
-        })).then(res => {
-            bodyUser = res.data.user;
-            $user.username = bodyUser.username;
+        if(login.validateEmail(bodyUser.email)){
+            formDisabled = true;
+            emailValidateStyle = null;
 
-            window.localStorage.setItem("jwtToken",res.data.user.token);
-
-            navigate("/", {
-                replace: true,
+            axios.put('/api/user',JSON.stringify({
+                'user': bodyUser
+            })).then(res => {
+                bodyUser = res.data.user;
+                $user.username = bodyUser.username;
+                window.localStorage.setItem("jwtToken",res.data.user.token);
+            }).finally(() => {
+               formDisabled = false;
             });
-        });
+        } else {
+            emailValidateStyle = 'red';
+        }
     }
 
     let logout = () => {
@@ -53,7 +60,7 @@
 
             <div class="col-md-6 offset-md-3 col-xs-12">
                 <h1 class="text-xs-center">Your Settings</h1>
-                <fieldset>
+                <fieldset disabled={formDisabled}>
                     <fieldset class="form-group">
                         <input bind:value={bodyUser.image}  class="form-control" type="text" placeholder="URL of profile picture">
                     </fieldset>
@@ -65,7 +72,7 @@
                                   placeholder="Short bio about you"></textarea>
                     </fieldset>
                     <fieldset class="form-group">
-                        <input bind:value={bodyUser.email} class="form-control form-control-lg" type="text" placeholder="Email">
+                        <input bind:value={bodyUser.email} class="form-control form-control-lg" type="text" placeholder="Email" style:border-color="{emailValidateStyle}">
                     </fieldset>
                     <fieldset class="form-group">
                         <input bind:value={bodyUser.password} class="form-control form-control-lg" type="password" placeholder="Password">
