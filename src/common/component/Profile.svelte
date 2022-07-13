@@ -1,7 +1,9 @@
 <script>
     import {currentMenu, user} from "../js/store";
     import { useParams } from "svelte-navigator";
+    import { useNavigate } from "svelte-navigator";
     import axios from "axios";
+    const navigate = useNavigate();
 
     $currentMenu = '@profile';
 
@@ -20,22 +22,37 @@
         'following' : null,
     }
 
+    let isLogin = false;
+
     axios.get('/api/profiles/' + username).then(res => {
         profile = res.data.profile;
-
         if(token != null){
             axios.get('/api/user').then(res => {
                 if(profile.username === res.data.user.username){
-                    buttonHtml = settingButtonHtml;
+                    isLogin = true;
                 }
             });
         } else {
             followButtonHtml += profile.username;
             buttonHtml = followButtonHtml;
         }
-
     });
 
+    let followEvent = () => {
+        if(isLogin){
+            navigate("/settings", {
+                replace: true,
+            });
+        } else {
+
+        }
+    }
+
+    $: if(isLogin) {
+        buttonHtml = settingButtonHtml;
+    } else {
+        buttonHtml = followButtonHtml;
+    }
 
 </script>
 
@@ -49,9 +66,9 @@
                     <img src={profile.image} alt="" class="user-img"/>
                     <h4>{profile.username}</h4>
                     <p>
-                        {profile.bio}
+                        {profile.bio == null ? '' : profile.bio}
                     </p>
-                    <button class="btn btn-sm btn-outline-secondary action-btn">
+                    <button on:click={followEvent} class="btn btn-sm btn-outline-secondary action-btn">
                         {@html buttonHtml}
                     </button>
                 </div>
