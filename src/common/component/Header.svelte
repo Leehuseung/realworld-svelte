@@ -4,13 +4,12 @@
     import { currentMenu } from "../js/store";
     import axios from "axios";
 
-    let username = '';
-
     //로그인 상태 처리
     if(window.localStorage.getItem('jwtToken') != null){
         let token = window.localStorage.getItem("jwtToken");
         $user = {
-            'jwtToken' : token
+            'jwtToken' : token,
+            'username' : ''
         };
 
         axios.get('/api/user', {
@@ -18,7 +17,7 @@
                 Authorization: 'Token ' + token
             }
         }).then(res => {
-            username = res.data.user.username;
+            $user.username = res.data.user.username;
         }).catch(err => {
             console.log(err);
         });
@@ -61,10 +60,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/@profile"
+                    <a href="/profile/{$user.username}"
                        use:link class="nav-link"
                        class:active={$currentMenu == '@profile'}
-                    >{username}</a>
+                    >{$user.username}</a>
                 </li>
             {:else }
                 <li class="nav-item" >

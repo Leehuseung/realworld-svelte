@@ -24,13 +24,14 @@
             }))
             .then(res => {
                 currentMenu.update(() => 'home');
+                window.localStorage.setItem("jwtToken",res.data.user.token);
+                $user = {
+                    'jwtToken' : window.localStorage.getItem("jwtToken"),
+                    'username' : res.data.user.username
+                };
                 navigate("/", {
                     replace: true,
                 });
-                window.localStorage.setItem("jwtToken",res.data.user.token);
-                $user = {
-                    'jwtToken' : window.localStorage.getItem("jwtToken")
-                };
 
             }).catch(error => {
                 let data = error.response.data.errors;
