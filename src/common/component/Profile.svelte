@@ -7,7 +7,7 @@
 
     $currentMenu = '@profile';
 
-    let settingButtonHtml = '<i class="ion-gear-a"></i> Profile settings';
+    let settingButtonHtml = '<i class="ion-gear-a"></i> Edit Profile Settings';
     let followButtonHtml = '<i class="ion-plus-round"></i> Follow ';
     let buttonHtml = '';
 
@@ -30,6 +30,12 @@
             axios.get('/api/user').then(res => {
                 if(profile.username === res.data.user.username){
                     isLogin = true;
+                } else {
+                    followButtonHtml += profile.username;
+                    buttonHtml = followButtonHtml;
+                }
+                if(profile.image === null || profile.image === ""){
+                    profile.image = 'https://api.realworld.io/images/smiley-cyrus.jpeg';
                 }
             });
         } else {
