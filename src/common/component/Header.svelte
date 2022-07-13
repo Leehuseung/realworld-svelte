@@ -12,14 +12,8 @@
             'username' : ''
         };
 
-        axios.get('/api/user', {
-            headers: {
-                Authorization: 'Token ' + token
-            }
-        }).then(res => {
+        axios.get('/api/user').then(res => {
             $user.username = res.data.user.username;
-        }).catch(err => {
-            console.log(err);
         });
 
     } else {

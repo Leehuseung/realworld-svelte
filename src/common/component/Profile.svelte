@@ -1,9 +1,13 @@
 <script>
-    import { currentMenu } from "../js/store";
+    import {currentMenu, user} from "../js/store";
     import { useParams } from "svelte-navigator";
     import axios from "axios";
 
     $currentMenu = '@profile';
+
+    let settingButtonHtml = '<i class="ion-gear-a"></i> Profile settings';
+    let followButtonHtml = '<i class="ion-plus-round"></i> Follow ';
+    let buttonHtml = '';
 
     const params = useParams();
 
@@ -16,14 +20,22 @@
         'following' : null,
     }
 
-
     axios.get('/api/profiles/' + username).then(res => {
         profile = res.data.profile;
-    }).catch(err => {
-        console.log(err);
+
+        if(token != null){
+            axios.get('/api/user').then(res => {
+                if(profile.username === res.data.user.username){
+                    buttonHtml = settingButtonHtml;
+                }
+            });
+        } else {
+            followButtonHtml += profile.username;
+            buttonHtml = followButtonHtml;
+        }
+
     });
 
-    // alert($params.username);
 
 </script>
 
@@ -40,9 +52,7 @@
                         {profile.bio}
                     </p>
                     <button class="btn btn-sm btn-outline-secondary action-btn">
-                        <i class="ion-plus-round"></i>
-                        &nbsp;
-                        Follow Eric Simons
+                        {@html buttonHtml}
                     </button>
                 </div>
 

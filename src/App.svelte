@@ -17,6 +17,15 @@
     axios.defaults.baseURL = common_config.baseURL;
     axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
     axios.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
+    axios.interceptors.request.use(function (config) {
+        let token = window.localStorage.getItem("jwtToken");
+        if(token != null){
+            config.headers.Authorization = 'Token ' + token;
+        }
+        return config;
+    },function (error) {
+        console.log('error',error);
+    });
 
 </script>
 

@@ -16,28 +16,17 @@
         'password' : null
     };
 
-    axios.get('/api/user', {
-        headers: {
-            Authorization: 'Token ' + token
-        }
-    }).then(res => {
+    axios.get('/api/user').then(res => {
         bodyUser.username = res.data.user.username;
         bodyUser.email = res.data.user.email;
         bodyUser.bio = res.data.user.bio;
         bodyUser.image = res.data.user.image;
-    }).catch(err => {
-        console.log(err);
     });
 
     let updateSetting = () => {
-        console.log('user',user);
         axios.put('/api/user',JSON.stringify({
             'user': bodyUser
-        }), {
-            headers: {
-                Authorization: 'Token ' + token
-            }
-        }).then(res => {
+        })).then(res => {
             bodyUser = res.data.user;
             $user.username = bodyUser.username;
 
@@ -46,8 +35,6 @@
             navigate("/", {
                 replace: true,
             });
-        }).catch(err => {
-            console.log(err);
         });
     }
 
