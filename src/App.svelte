@@ -30,12 +30,12 @@
         {#if $user}
             <Route path="/editor" component="{EditArticle}" />
             <Route path="/settings" component="{Settings}" />
-            <Route path="/@profile" component="{Profile}" />
         {:else }
             <Route path="/register" component="{Register}" />
             <Route path="/login" component="{Login}" />
             <Route component={PageNotFound} />
         {/if}
+        <Route path="/profile/:username" component="{Profile}" />
     </div>
 </Router>
 
