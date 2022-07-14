@@ -27,6 +27,13 @@
         console.log('error',error);
     });
 
+    axios.interceptors.response.use(function (response) {
+        return response;
+    }, function (error) {
+        console.log('error',error);
+        return Promise.reject(error);
+    });
+
 </script>
 
 <Header />
