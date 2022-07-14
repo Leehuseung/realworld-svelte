@@ -7,8 +7,6 @@
 
     $currentMenu = '@profile';
 
-    let settingButtonHtml = '<i class="ion-gear-a"></i> Edit Profile Settings';
-    let followButtonHtml = '<i class="ion-plus-round"></i> Follow ';
     let buttonHtml = '';
 
     const params = useParams();
@@ -22,42 +20,63 @@
         'following' : null,
     }
 
-    let isLogin = false;
+    let myPage = false;
 
     axios.get('/api/profiles/' + username).then(res => {
         profile = res.data.profile;
         if(token != null){
             axios.get('/api/user').then(res => {
                 if(profile.username === res.data.user.username){
-                    isLogin = true;
-                } else {
-                    followButtonHtml += profile.username;
-                    buttonHtml = followButtonHtml;
-                }
-                if(profile.image === null || profile.image === ""){
-                    profile.image = 'https://api.realworld.io/images/smiley-cyrus.jpeg';
+                    myPage = true;
                 }
             });
         } else {
-            followButtonHtml += profile.username;
-            buttonHtml = followButtonHtml;
+            buttonHtml = '<i class="ion-plus-round"></i> Follow ' + profile.username;
         }
+        if(profile.image === null || profile.image === ""){
+            profile.image = 'https://api.realworld.io/images/smiley-cyrus.jpeg';
+        }
+    }).catch(error => {
+        navigate("/", {
+            replace: true,
+        });
+
     });
 
     let followEvent = () => {
-        if(isLogin){
+        if(myPage){
             navigate("/settings", {
                 replace: true,
             });
         } else {
-
+            if(token == null){
+                navigate("/register", {
+                    replace: true,
+                });
+                return;
+            }
+            if(profile.following){
+                //UnFollow
+                axios.delete(`/api/profiles/${profile.username}/follow`).then(res => {
+                    profile.following = res.data.profile.following;
+                });
+            } else {
+                //Follow
+                axios.post(`/api/profiles/${profile.username}/follow`).then(res => {
+                    profile.following = res.data.profile.following;
+                });
+            }
         }
     }
 
-    $: if(isLogin) {
-        buttonHtml = settingButtonHtml;
+    $: if(myPage) {
+        buttonHtml = '<i class="ion-gear-a"></i> Edit Profile Settings';
     } else {
-        buttonHtml = followButtonHtml;
+        if(profile.following){
+            buttonHtml = '<i class="ion-plus-round"></i> Unfollow ' + profile.username;
+        } else {
+            buttonHtml = '<i class="ion-plus-round"></i> Follow ' + profile.username;
+        }
     }
 
 </script>
