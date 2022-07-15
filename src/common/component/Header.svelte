@@ -2,23 +2,6 @@
     import { link } from "svelte-navigator";
     import { user } from "../js/store";
     import { currentMenu } from "../js/store";
-    import axios from "axios";
-
-    //로그인 상태 처리
-    if(window.localStorage.getItem('jwtToken') != null){
-        let token = window.localStorage.getItem("jwtToken");
-        $user = {
-            'jwtToken' : token,
-            'username' : ''
-        };
-
-        axios.get('/api/user').then(res => {
-            $user.username = res.data.user.username;
-        });
-
-    } else {
-        $user = null;
-    }
 </script>
 
 <nav class="navbar navbar-light">
