@@ -42,7 +42,7 @@
             resUser.image = $noImage;
         }
         user.set(res.data.user);
-    }).catch(error => {
+    }).catch(() => {
         user.set(null);
     });
 
@@ -56,7 +56,6 @@
             <Home />
         </Route>
         {#await $user}
-            ...Loading
         {:then $user}
             {#if $user}
                 <Route path="/editor" component="{EditArticle}" />
@@ -68,7 +67,7 @@
             {/if}
             <Route component={PageNotFound} />
         {:catch error}
-            오류가 발생했습니다.
+            Error
         {/await}
         <Route path="/profile/:username" component="{Profile}" />
         <Route path="/article/:slug" component="{Article}" />
