@@ -1,10 +1,15 @@
 <script>
-    import {currentMenu} from "../../common/js/store";
-    import { useNavigate } from "svelte-navigator";
+    import {currentMenu, noImage, user} from "../../common/js/store";
+    import {useNavigate, useParams} from "svelte-navigator";
     import axios from "axios";
+    import {dateToString} from "../../common/js/common_util";
 
     const navigate = useNavigate();
     $currentMenu = 'editor';
+
+    const params = useParams();
+    let slug = $params.slug;
+    let isUpdate = typeof slug !== 'undefined';
 
     let validateHtml = '';
     let isDisable = false;
@@ -15,6 +20,12 @@
         'tagList' : []
     }
     let tagName = '';
+
+    if(isUpdate){
+        axios.get(`/api/articles/${slug}`).then(res => {
+            article = res.data.article;
+        });
+    }
 
     let validateArticle = (article) => {
         if(article.title === ''){
@@ -50,20 +61,34 @@
         }
     }
 
+    let articleErrorHandle = (error) => {
+        isDisable = false;
+        let data = error.response.data.errors;
+        if(Object.keys(data)[0] === 'article'){
+            validateHtml =  '<li>title must be unique</li>';
+        }
+    }
+
     let publishArticle = () => {
         if(validateArticle(article)){
             isDisable = true;
-            axios.post('/api/articles',JSON.stringify({
-                'article' : article
-            })).then(res => {
-
-            }).catch(error => {
-                isDisable = false;
-                let data = error.response.data.errors;
-                if(Object.keys(data)[0] === 'article'){
-                    validateHtml =  '<li>title must be unique</li>';
-                }
-            });
+            if(isUpdate){
+                axios.put(`/api/articles/${slug}`,JSON.stringify({
+                    'article' : article
+                })).then(res => {
+                    navigate(`/article/${res.data.article.slug}`, {
+                        replace: true,
+                    });
+                }).catch(articleErrorHandle);
+            } else {
+                axios.post('/api/articles',JSON.stringify({
+                    'article' : article
+                })).then(res => {
+                    navigate(`/article/${res.data.article.slug}`, {
+                        replace: true,
+                    });
+                }).catch(articleErrorHandle);
+            }
         }
     }
 
