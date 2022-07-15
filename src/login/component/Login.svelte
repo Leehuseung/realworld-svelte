@@ -61,6 +61,12 @@
         emailValidateStyle = 'red';
     }
 
+    let keyPress = e => {
+        if(e.charCode === 13){
+            loginCheck();
+        }
+    }
+
 </script>
 
 <div class="auth-page">
@@ -77,10 +83,10 @@
                 </ul>
                 <form>
                     <fieldset class="form-group">
-                        <input bind:value={email} class="form-control form-control-lg" type="text" placeholder="Email" style:border-color="{emailValidateStyle}">
+                        <input on:keypress={keyPress}  bind:value={email} class="form-control form-control-lg" type="text" placeholder="Email" style:border-color="{emailValidateStyle}">
                     </fieldset>
                     <fieldset class="form-group">
-                        <input bind:value={password} class="form-control form-control-lg" type="password" placeholder="Password">
+                        <input on:keypress={keyPress} bind:value={password} class="form-control form-control-lg" type="password" placeholder="Password">
                     </fieldset>
                     <button on:click={loginCheck} type="button" class="btn btn-lg btn-primary pull-xs-right">
                         Sign in
