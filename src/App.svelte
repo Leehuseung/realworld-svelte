@@ -36,12 +36,14 @@
         return Promise.reject(error);
     });
 
-    axios.get('/api/user').then(res => {
+    $: $user = axios.get('/api/user').then(res => {
         let resUser = res.data.user;
         if(resUser.image === '' || resUser.image === null){
             resUser.image = $noImage;
         }
         user.set(res.data.user);
+    }).catch(error => {
+        user.set(null);
     });
 
 </script>
@@ -53,15 +55,23 @@
         <Route path="/">
             <Home />
         </Route>
-        {#if $user}
-            <Route path="/editor" component="{EditArticle}" />
-            <Route path="/settings" component="{Settings}" />
-        {:else }
-            <Route path="/register" component="{Register}" />
-            <Route path="/login" component="{Login}" />
+        {#await $user}
+            ...Loading
+        {:then $user}
+            {#if $user}
+                <Route path="/editor" component="{EditArticle}" />
+                <Route path="/settings" component="{Settings}" />
+                <Route path="/editor/:slug" component="{EditArticle}" />
+            {:else}
+                <Route path="/register" component="{Register}" />
+                <Route path="/login" component="{Login}" />
+            {/if}
             <Route component={PageNotFound} />
-        {/if}
+        {:catch error}
+            오류가 발생했습니다.
+        {/await}
         <Route path="/profile/:username" component="{Profile}" />
+        <Route path="/article/:slug" component="{Article}" />
     </div>
 </Router>
 
