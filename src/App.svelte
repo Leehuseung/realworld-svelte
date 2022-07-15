@@ -9,8 +9,10 @@
     import Settings from "./setting/component/Settings.svelte";
     import EditArticle from "./article/component/EditArticle.svelte";
     import Profile from "./common/component/Profile.svelte";
+    import Article from "./article/component/Article.svelte";
     import axios from "axios";
-    import { user} from "./common/js/store";
+    import { user } from "./common/js/store";
+    import { noImage } from "./common/js/store";
     import common_config from "../common_config";
 
     //axios 기본 설정
@@ -32,6 +34,14 @@
     }, function (error) {
         console.log('error',error);
         return Promise.reject(error);
+    });
+
+    axios.get('/api/user').then(res => {
+        let resUser = res.data.user;
+        if(resUser.image === '' || resUser.image === null){
+            resUser.image = $noImage;
+        }
+        user.set(res.data.user);
     });
 
 </script>
