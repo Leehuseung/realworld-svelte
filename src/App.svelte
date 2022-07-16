@@ -35,16 +35,18 @@
         console.log('error',error);
         return Promise.reject(error);
     });
+    if(localStorage.getItem("jwtToken")!==null){
+        $user = axios.get('/api/user').then(res => {
+            let resUser = res.data.user;
+            if(resUser.image === '' || resUser.image === null){
+                resUser.image = $noImage;
+            }
+            user.set(res.data.user);
+        }).catch(() => {
+            user.set(null);
+        });
+    }
 
-    $: $user = axios.get('/api/user').then(res => {
-        let resUser = res.data.user;
-        if(resUser.image === '' || resUser.image === null){
-            resUser.image = $noImage;
-        }
-        user.set(res.data.user);
-    }).catch(() => {
-        user.set(null);
-    });
 
 </script>
 
@@ -56,6 +58,7 @@
             <Home />
         </Route>
         {#await $user}
+            &nbsp;
         {:then $user}
             {#if $user}
                 <Route path="/editor" component="{EditArticle}" />
@@ -75,7 +78,3 @@
 </Router>
 
 <Footer />
-
-
-<style>
-</style>

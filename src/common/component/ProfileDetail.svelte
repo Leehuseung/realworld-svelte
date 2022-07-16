@@ -35,7 +35,6 @@
             }
         }
     }
-
     let buttonHtml = '';
     $: if(myPage) {
         buttonHtml = '<i class="ion-gear-a"></i> Edit Profile Settings';
@@ -47,6 +46,11 @@
         }
     }
 </script>
+<style>
+    :global(a){
+        cursor: pointer;
+    }
+</style>
 
 
 <div class="user-info">

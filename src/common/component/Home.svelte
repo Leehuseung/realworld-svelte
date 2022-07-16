@@ -1,7 +1,14 @@
 <script>
-    import { currentMenu } from "../js/store";
-
+    import {currentMenu, noImage} from "../js/store";
+    import {user} from "../js/store";
+    import ArticlePreview from "../../article/component/ArticlePreview.svelte";
+    import axios from "axios";
     $currentMenu = 'home';
+
+    $: data = axios.get('/api/articles?limit=10&offset=0').then(res => res.data);
+
+
+
 </script>
 
 <div class="home-page">
@@ -19,50 +26,27 @@
             <div class="col-md-9">
                 <div class="feed-toggle">
                     <ul class="nav nav-pills outline-active">
+                        {#if $user}
                         <li class="nav-item">
-                            <a class="nav-link disabled" href="{null}">Your Feed</a>
+                            <a class="nav-link" href="{null}">Your Feed</a>
                         </li>
+                        {/if}
                         <li class="nav-item">
                             <a class="nav-link active" href="{null}">Global Feed</a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="article-preview">
-                    <div class="article-meta">
-                        <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" alt=""/></a>
-                        <div class="info">
-                            <a href="{null}" class="author">Eric Simons</a>
-                            <span class="date">January 20th</span>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                            <i class="ion-heart"></i> 29
-                        </button>
-                    </div>
-                    <a href="{null}" class="preview-link">
-                        <h1>How to build webapps that scale</h1>
-                        <p>This is the description for the post.</p>
-                        <span>Read more...</span>
-                    </a>
-                </div>
+                {#await data}
+                    Loading articles...
+                {:then data}
+                    {#each data.articles as article}
+                        <ArticlePreview bind:article="{article}"/>
+                    {/each}
 
-                <div class="article-preview">
-                    <div class="article-meta">
-                        <a href="profile.html"><img src="http://i.imgur.com/N4VcUeJ.jpg" alt=""/></a>
-                        <div class="info">
-                            <a href="{null}" class="author">Albert Pai</a>
-                            <span class="date">January 20th</span>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                            <i class="ion-heart"></i> 32
-                        </button>
-                    </div>
-                    <a href="{null}" class="preview-link">
-                        <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-                        <p>This is the description for the post.</p>
-                        <span>Read more...</span>
-                    </a>
-                </div>
+                {:catch error}
+                    error
+                {/await}
 
             </div>
 
