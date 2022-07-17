@@ -5,6 +5,7 @@
     import {dateToString} from "../../common/js/common_util";
     import ArticleProfile from "./ArticleProfile.svelte";
     import CommentArea from "../../comment/component/CommentArea.svelte";
+    import { marked } from "marked";
     const navigate = useNavigate();
     const params = useParams();
 
@@ -46,8 +47,6 @@
         });
     });
 
-    // $: commentData = axios.get(``).then(res => res.data);
-
 </script>
 
 <div class="article-page">
@@ -66,7 +65,7 @@
 
         <div class="row article-content">
             <div class="col-md-12">
-                <p>{article.body}</p>
+                {@html marked.parse(article.body)}
             </div>
             <ul class="tag-list">
                 {#each article.tagList as tag}
