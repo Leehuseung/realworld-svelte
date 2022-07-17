@@ -37,7 +37,7 @@
         <a href="/profile/{article.author.username}"><img src="{article.author.image}" alt=""/></a>
         <div class="info">
             <a href="/profile/{article.author.username}" class="author">{article.author.username}</a>
-            <span class="date">{dateToString(article.updatedAt)}</span>
+            <span class="date">{dateToString(article.createdAt)}</span>
         </div>
 
         <button on:click={favoriteClick} class="btn {article.favorited ? 'btn-primary' : 'btn-outline-primary'} btn-sm pull-xs-right">

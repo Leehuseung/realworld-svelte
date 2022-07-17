@@ -35,7 +35,7 @@
         if(article.author.image === '' || article.author.image === null){
             article.author.image = $noImage;
         }
-        article.updatedAt = dateToString(article.updatedAt);
+        article.createdAt = dateToString(article.createdAt);
         user.subscribe(user => {
             if(user != null && user.username === article.author.username){
                 isWriter = true;

@@ -2,7 +2,6 @@
     import {currentMenu, noImage, user} from "../../common/js/store";
     import {useNavigate, useParams} from "svelte-navigator";
     import axios from "axios";
-    import {dateToString} from "../../common/js/common_util";
 
     const navigate = useNavigate();
     $currentMenu = 'editor';
