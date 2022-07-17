@@ -38,7 +38,7 @@
                     <ul class="nav nav-pills outline-active">
                         {#if $user}
                         <li class="nav-item">
-                            <a on:click={yourFeedEvent} class="nav-link {selectActive === 'your' ? 'active' : ''}">Your Feed</a>
+                            <a on:click={yourFeedEvent} class="nav-link {selectActive === 'your' ? 'active' : ''}" href="{null}">Your Feed</a>
                         </li>
                         {/if}
                         <li class="nav-item">

@@ -67,10 +67,10 @@
                 <div class="articles-toggle">
                     <ul class="nav nav-pills outline-active">
                         <li class="nav-item">
-                            <a on:click={myArticlesEvent} class="nav-link {selectActive === 'my' ? 'active' : ''}" >My Articles</a>
+                            <a on:click={myArticlesEvent} class="nav-link {selectActive === 'my' ? 'active' : ''}" href="{null}">My Articles</a>
                         </li>
                         <li class="nav-item">
-                            <a on:click={favoriteArticlesEvent}  class="nav-link {selectActive === 'favorite' ? 'active' : ''}">Favorited Articles</a>
+                            <a on:click={favoriteArticlesEvent}  class="nav-link {selectActive === 'favorite' ? 'active' : ''}" href="{null}">Favorited Articles</a>
                         </li>
                     </ul>
                 </div>
