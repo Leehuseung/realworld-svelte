@@ -7,7 +7,17 @@
 
     $: data = axios.get('/api/articles?limit=10&offset=0').then(res => res.data);
 
+    let selectActive = 'global';
 
+    let yourFeedEvent = e => {
+        selectActive = 'your';
+        data = axios.get('/api/articles/feed?limit=10&offset=0').then(res => res.data);
+    }
+
+    let globalFeedEvent = e => {
+        selectActive = 'global';
+        data = axios.get('/api/articles?limit=10&offset=0').then(res => res.data);
+    }
 
 </script>
 
@@ -28,22 +38,29 @@
                     <ul class="nav nav-pills outline-active">
                         {#if $user}
                         <li class="nav-item">
-                            <a class="nav-link" href="{null}">Your Feed</a>
+                            <a on:click={yourFeedEvent} class="nav-link {selectActive === 'your' ? 'active' : ''}">Your Feed</a>
                         </li>
                         {/if}
                         <li class="nav-item">
-                            <a class="nav-link active" href="{null}">Global Feed</a>
+                            <a on:click={globalFeedEvent} class="nav-link {selectActive === 'global' ? 'active' : ''}" href="{null}">Global Feed</a>
                         </li>
                     </ul>
                 </div>
 
                 {#await data}
-                    Loading articles...
+                    <div class="article-preview">
+                        Loading articles...
+                    </div>
                 {:then data}
-                    {#each data.articles as article}
-                        <ArticlePreview bind:article="{article}"/>
-                    {/each}
-
+                    {#if data.articles.length != 0}
+                        {#each data.articles as article}
+                            <ArticlePreview bind:article="{article}"/>
+                        {/each}
+                    {:else}
+                        <div class="article-preview">
+                            No articles are here... yet.
+                        </div>
+                    {/if}
                 {:catch error}
                     error
                 {/await}
