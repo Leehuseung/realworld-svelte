@@ -5,12 +5,15 @@
     import {noImage} from "../js/store";
     import axios from "axios";
     import ProfileDetail from "./ProfileDetail.svelte";
+    import ArticlePreview from "../../article/component/ArticlePreview.svelte";
     const navigate = useNavigate();
 
     $currentMenu = '@profile';
 
     const params = useParams();
     let username = $params.username;
+
+    let selectActive = 'my';
 
     let profile = {
         'username' : null,
@@ -37,6 +40,19 @@
         });
     });
 
+    $: data = axios.get(`/api/articles?author=${username}&limit=5&offset=0`).then(res => res.data);
+
+    let myArticlesEvent = e => {
+        selectActive = 'my'
+        data = axios.get(`/api/articles?author=${username}&limit=5&offset=0`).then(res => res.data);
+    }
+
+    let favoriteArticlesEvent = e => {
+        selectActive = 'favorite'
+        data = axios.get(`/api/articles?favorited=${username}&limit=5&offset=0`).then(res => res.data);
+    }
+
+
 
 </script>
 
@@ -51,54 +67,31 @@
                 <div class="articles-toggle">
                     <ul class="nav nav-pills outline-active">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{null}">My Articles</a>
+                            <a on:click={myArticlesEvent} class="nav-link {selectActive === 'my' ? 'active' : ''}" >My Articles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{null}">Favorited Articles</a>
+                            <a on:click={favoriteArticlesEvent}  class="nav-link {selectActive === 'favorite' ? 'active' : ''}">Favorited Articles</a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="article-preview">
-                    <div class="article-meta">
-                        <a href="{null}"><img src="http://i.imgur.com/Qr71crq.jpg" alt=""/></a>
-                        <div class="info">
-                            <a href="{null}" class="author">Eric Simons</a>
-                            <span class="date">January 20th</span>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                            <i class="ion-heart"></i> 29
-                        </button>
+                {#await data}
+                    <div class="article-preview">
+                        Loading articles...
                     </div>
-                    <a href="{null}" class="preview-link">
-                        <h1>How to build webapps that scale</h1>
-                        <p>This is the description for the post.</p>
-                        <span>Read more...</span>
-                    </a>
-                </div>
-
-                <div class="article-preview">
-                    <div class="article-meta">
-                        <a href="{null}"><img src="http://i.imgur.com/N4VcUeJ.jpg" alt=""/></a>
-                        <div class="info">
-                            <a href="{null}" class="author">Albert Pai</a>
-                            <span class="date">January 20th</span>
+                {:then data}
+                    {#if data.articles.length != 0}
+                        {#each data.articles as article}
+                            <ArticlePreview bind:article="{article}"/>
+                        {/each}
+                    {:else}
+                        <div class="article-preview">
+                            No articles are here... yet.
                         </div>
-                        <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                            <i class="ion-heart"></i> 32
-                        </button>
-                    </div>
-                    <a href="{null}" class="preview-link">
-                        <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-                        <p>This is the description for the post.</p>
-                        <span>Read more...</span>
-                        <ul class="tag-list">
-                            <li class="tag-default tag-pill tag-outline">Music</li>
-                            <li class="tag-default tag-pill tag-outline">Song</li>
-                        </ul>
-                    </a>
-                </div>
-
+                    {/if}
+                {:catch error}
+                    error
+                {/await}
 
             </div>
 
