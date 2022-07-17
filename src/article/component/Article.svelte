@@ -63,9 +63,17 @@
 
         <div class="row article-content">
             <div class="col-md-12">
-                {article.body}
+                <p>{article.body}</p>
             </div>
+            <ul class="tag-list">
+                {#each article.tagList as tag}
+                <li class="tag-default tag-pill tag-outline ng-binding ng-scope">
+                    {tag}
+                </li>
+                {/each}
+            </ul>
         </div>
+
 
         <hr/>
 
@@ -82,7 +90,7 @@
                         <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
                     </div>
                     <div class="card-footer">
-                        <img alt="" src="{$user != null ? $user.image : ''}" class="comment-author-img"/>
+                        <img alt="" src="{$user != null ? $user.image : $noImage}" class="comment-author-img"/>
                         <button class="btn btn-sm btn-primary">
                             Post Comment
                         </button>
