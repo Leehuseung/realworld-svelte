@@ -15,7 +15,6 @@
 
     let register = function (){
         if(loginValidation()){
-            // $user = { email, password };
 
             let body = {
                 'user' : {
@@ -26,8 +25,13 @@
             }
 
             axios.post('/api/users',JSON.stringify(body))
-            .then(response => {
+            .then(res => {
                 currentMenu.update(() => 'home');
+                window.localStorage.setItem("jwtToken",res.data.user.token);
+                $user = {
+                    'jwtToken' : window.localStorage.getItem("jwtToken"),
+                    'username' : res.data.user.username
+                };
                 navigate("/", {
                     replace: true,
                 });
