@@ -81,7 +81,7 @@
     <a href="/profile/{article.author.username}"><img alt="" src="{article.author.image}"/></a>
     <div class="info">
         <a href="/profile/{article.author.username}" class="author">{article.author.username}</a>
-        <span class="date">{article.updatedAt}</span>
+        <span class="date">{article.createdAt}</span>
     </div>
     <button on:click={followEvent}  class="btn btn-sm btn-outline-secondary">
         {@html followButtonHtml}
