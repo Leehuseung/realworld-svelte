@@ -7,18 +7,18 @@
 
     let commentArr = [];
 
-    $: data = axios.get(`/api/articles/${slug}/comments`).then(res => res.data);
+    $: data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
 
     let commentBody = '';
 
     let postComment = () => {
         if(commentBody !== ''){
-            axios.post(`/api/articles/${slug}/comments`,{
+            axios.post(`/api/articles/`+encodeURIComponent(slug)+`/comments`,{
                 "comment": {
                     "body": commentBody
                 }
             }).then(res => {
-                data = axios.get(`/api/articles/${slug}/comments`).then(res => res.data);
+                data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
                 commentBody = '';
             });
         }
@@ -26,8 +26,8 @@
 
     let deleteComment = id => {
         return () => {
-            axios.delete(`/api/articles/${slug}/comments/${id}`).then(() => {
-                data = axios.get(`/api/articles/${slug}/comments`).then(res => res.data);
+            axios.delete(`/api/articles/`+encodeURIComponent(slug)+`/comments/${id}`).then(() => {
+                data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
             });
         }
     }

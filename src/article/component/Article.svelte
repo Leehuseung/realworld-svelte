@@ -30,7 +30,7 @@
         }
     }
 
-    axios.get(`/api/articles/${slug}`).then(res => {
+    axios.get('/api/articles/'+encodeURIComponent(slug)).then(res => {
         article = res.data.article;
         if(article.author.image === '' || article.author.image === null){
             article.author.image = $noImage;

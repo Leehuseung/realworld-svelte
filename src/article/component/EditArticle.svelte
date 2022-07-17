@@ -21,7 +21,7 @@
     let tagName = '';
 
     if(isUpdate){
-        axios.get(`/api/articles/${slug}`).then(res => {
+        axios.get(`/api/articles/`+encodeURIComponent(slug)).then(res => {
             article = res.data.article;
         });
     }
@@ -72,7 +72,7 @@
         if(validateArticle(article)){
             isDisable = true;
             if(isUpdate){
-                axios.put(`/api/articles/${slug}`,JSON.stringify({
+                axios.put(`/api/articles/`+encodeURIComponent(slug),JSON.stringify({
                     'article' : article
                 })).then(res => {
                     navigate(`/article/${res.data.article.slug}`, {
