@@ -23,6 +23,11 @@
     if(isUpdate){
         axios.get(`/api/articles/`+encodeURIComponent(slug)).then(res => {
             article = res.data.article;
+            if($user.username !== article.author.username){
+                navigate(`/`, {
+                    replace: true,
+                });
+            }
         });
     }
 
