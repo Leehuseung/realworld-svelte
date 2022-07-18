@@ -1,6 +1,6 @@
+let baseURL = 'BASE__SERVER__URL';
 const common_config = {
-  "baseURL": "http://49.247.146.76"
+  "baseURL": baseURL
 }
-
 export default common_config;
 
