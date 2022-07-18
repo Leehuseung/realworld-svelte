@@ -41,6 +41,7 @@
     }
 
     let loginValidation = function() {
+        emailValidateStyle = null;
         if(email === ''){
             errorHtml = '<li>email can\'t be blank</li>';
             return false;
@@ -49,16 +50,11 @@
             return false;
         } else if(!login.validateEmail(email)){
             errorHtml = '<li>email is invalid</li>';
+            emailValidateStyle = 'red';
             return false;
         }
 
         return true;
-    }
-
-    $: if(login.validateEmail(email)){
-        emailValidateStyle = null;
-    } else {
-        emailValidateStyle = 'red';
     }
 
     let keyPress = e => {
