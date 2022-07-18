@@ -41,6 +41,7 @@ export default {
 	},
 	plugins: [
 		replace({
+			preventAssignment: true,
 			'BASE__SERVER__URL': prod === 'on' ? 'http://realworld.huseung.me:8070' : 'http://localhost:8070'
 		}),
 		svelte({
