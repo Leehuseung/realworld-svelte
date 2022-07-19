@@ -6,6 +6,8 @@
     import axios from "axios";
     import ProfileDetail from "./ProfileDetail.svelte";
     import ArticlePreview from "../../article/component/ArticlePreview.svelte";
+    import {onMount} from "svelte";
+    import InfiniteScroll from "./InfiniteScroll.svelte";
     const navigate = useNavigate();
 
     $currentMenu = '@profile';
@@ -40,19 +42,48 @@
         });
     });
 
-    $: data = axios.get(`/api/articles?author=${username}&limit=5&offset=0`).then(res => res.data);
+
+    let offset = 0;
+    let articlesCount = 0;
+    let data = [];
+    let newBatch = [];
+    let param = '';
+
+    async function fetchData() {
+        const response = await axios.get(`/api/articles?${param}&limit=5&offset=${offset}`).then(res => res.data);
+        newBatch = await response.articles;
+        articlesCount = await response.articles;
+    };
+
+    onMount(()=> {
+        param = `author=${username}`;
+        fetchData();
+    })
+
+    $: data = [
+        ...data,
+        ...newBatch
+    ];
+
+    let initPage = () => {
+        offset = 0;
+        newBatch = [];
+        data = [];
+    }
 
     let myArticlesEvent = e => {
         selectActive = 'my'
-        data = axios.get(`/api/articles?author=${username}&limit=5&offset=0`).then(res => res.data);
+        param = `author=${username}`;
+        initPage();
+        fetchData();
     }
 
     let favoriteArticlesEvent = e => {
         selectActive = 'favorite'
-        data = axios.get(`/api/articles?favorited=${username}&limit=5&offset=0`).then(res => res.data);
+        param = `favorited=${username}`;
+        initPage();
+        fetchData();
     }
-
-
 
 </script>
 
@@ -74,28 +105,22 @@
                         </li>
                     </ul>
                 </div>
-
-                {#await data}
+                {#if data.length !== 0}
+                    {#each data as article}
+                        <ArticlePreview article="{article}"/>
+                    {/each}
+                    <InfiniteScroll
+                            hasMore={newBatch.length}
+                          on:loadMore={() => {offset+=5; fetchData()}} />
+                {:else }
                     <div class="article-preview">
-                        Loading articles...
+                        No articles are here... yet.
                     </div>
-                {:then data}
-                    {#if data.articles.length != 0}
-                        {#each data.articles as article}
-                            <ArticlePreview bind:article="{article}"/>
-                        {/each}
-                    {:else}
-                        <div class="article-preview">
-                            No articles are here... yet.
-                        </div>
-                    {/if}
-                {:catch error}
-                    error
-                {/await}
+                {/if}
 
             </div>
 
         </div>
     </div>
-
 </div>
+

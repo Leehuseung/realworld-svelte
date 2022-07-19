@@ -3,20 +3,53 @@
     import {user} from "../js/store";
     import ArticlePreview from "../../article/component/ArticlePreview.svelte";
     import axios from "axios";
+    import {onMount} from "svelte";
+    import InfiniteScroll from "./InfiniteScroll.svelte";
     $currentMenu = 'home';
-
-    $: data = axios.get('/api/articles?limit=10&offset=0').then(res => res.data);
-
     let selectActive = 'global';
+
+    let offset = 0;
+    let articlesCount = 0;
+    let data = [];
+    let newBatch = [];
+    let param = '';
+    let requestUrl = '';
+
+    async function fetchData() {
+        const response = await axios.get(requestUrl + param +`limit=10&offset=${offset}`).then(res => res.data);
+        newBatch = await response.articles;
+        articlesCount = await response.articles;
+    };
+
+    onMount(()=> {
+        requestUrl = `/api/articles?`;
+        fetchData();
+    })
+
+    $: data = [
+        ...data,
+        ...newBatch
+    ];
+
+    let initPage = () => {
+        offset = 0;
+        param = '';
+        newBatch = [];
+        data = [];
+    }
 
     let yourFeedEvent = e => {
         selectActive = 'your';
-        data = axios.get('/api/articles/feed?limit=10&offset=0').then(res => res.data);
+        requestUrl = `/api/articles/feed?`;
+        initPage();
+        fetchData();
     }
 
     let globalFeedEvent = e => {
         selectActive = 'global';
-        data = axios.get('/api/articles?limit=10&offset=0').then(res => res.data);
+        requestUrl = `/api/articles?`;
+        initPage();
+        fetchData();
     }
 
     $: tagData = axios.get('/api/tags').then(res => res.data);
@@ -24,9 +57,13 @@
     let selectTag = '';
     let clickTag = tag => {
         return e => {
+            initPage();
             selectActive = 'tag';
             selectTag = tag;
-            data = axios.get(`/api/articles?tag=${tag}&limit=10&offset=0`).then(res => res.data);
+            requestUrl = `/api/articles?`;
+            param = `tag=${tag}&`;
+            fetchData();
+            // data = axios.get(`/api/articles?tag=${tag}&limit=10&offset=0`).then(res => res.data);
         }
     }
 
@@ -64,23 +101,18 @@
                     </ul>
                 </div>
 
-                {#await data}
+                {#if data.length !== 0}
+                    {#each data as article}
+                        <ArticlePreview article="{article}"/>
+                    {/each}
+                    <InfiniteScroll
+                            hasMore={newBatch.length}
+                            on:loadMore={() => {offset+=10; fetchData()}} />
+                {:else }
                     <div class="article-preview">
-                        Loading articles...
+                        No articles are here... yet.
                     </div>
-                {:then data}
-                    {#if data.articles.length != 0}
-                        {#each data.articles as article}
-                            <ArticlePreview bind:article="{article}"/>
-                        {/each}
-                    {:else}
-                        <div class="article-preview">
-                            No articles are here... yet.
-                        </div>
-                    {/if}
-                {:catch error}
-                    error
-                {/await}
+                {/if}
 
             </div>
 
