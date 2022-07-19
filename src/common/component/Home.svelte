@@ -14,9 +14,11 @@
     let newBatch = [];
     let param = '';
     let requestUrl = '';
+    let articleHtml = 'Loading articles...';
 
     async function fetchData() {
         const response = await axios.get(requestUrl + param +`limit=10&offset=${offset}`).then(res => res.data);
+        articleHtml = 'No articles are here... yet.';
         newBatch = await response.articles;
         articlesCount = await response.articles;
     };
@@ -32,6 +34,7 @@
     ];
 
     let initPage = () => {
+        articleHtml = 'Loading articles...';
         offset = 0;
         param = '';
         newBatch = [];
@@ -63,7 +66,6 @@
             requestUrl = `/api/articles?`;
             param = `tag=${tag}&`;
             fetchData();
-            // data = axios.get(`/api/articles?tag=${tag}&limit=10&offset=0`).then(res => res.data);
         }
     }
 
@@ -110,7 +112,7 @@
                             on:loadMore={() => {offset+=10; fetchData()}} />
                 {:else }
                     <div class="article-preview">
-                        No articles are here... yet.
+                        {@html articleHtml}
                     </div>
                 {/if}
 

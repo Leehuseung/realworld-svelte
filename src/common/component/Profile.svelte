@@ -16,6 +16,7 @@
     let username = $params.username;
 
     let selectActive = 'my';
+    let articleHtml = 'Loading articles...';
 
     let profile = {
         'username' : null,
@@ -51,6 +52,7 @@
 
     async function fetchData() {
         const response = await axios.get(`/api/articles?${param}&limit=5&offset=${offset}`).then(res => res.data);
+        articleHtml = 'No articles are here... yet.';
         newBatch = await response.articles;
         articlesCount = await response.articles;
     };
@@ -66,6 +68,7 @@
     ];
 
     let initPage = () => {
+        articleHtml = 'Loading articles...';
         offset = 0;
         newBatch = [];
         data = [];
@@ -114,7 +117,7 @@
                           on:loadMore={() => {offset+=5; fetchData()}} />
                 {:else }
                     <div class="article-preview">
-                        No articles are here... yet.
+                        {@html articleHtml}
                     </div>
                 {/if}
 
