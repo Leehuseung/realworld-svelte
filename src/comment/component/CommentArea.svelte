@@ -3,11 +3,14 @@
     import {noImage} from "../../common/js/store";
     import axios from "axios";
     import Comment from "./Comment.svelte";
+    import {writable} from "svelte/store";
     export let slug;
 
-    let commentArr = [];
+    $: commentArr = writable([]);
 
-    $: data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
+    $: data = axios.get(`/api/articles/${slug}/comments`).then(res => {
+        commentArr.set(res.data.comments);
+    });
 
     let commentBody = '';
 
@@ -18,7 +21,11 @@
                     "body": commentBody
                 }
             }).then(res => {
-                data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
+                if(res.data.comment.author.image === '' || res.data.comment.author.image === null){
+                    res.data.comment.author.image = $noImage;
+                }
+                $commentArr.unshift(res.data.comment);
+                commentArr.set($commentArr);
                 commentBody = '';
             });
         }
@@ -27,7 +34,13 @@
     let deleteComment = id => {
         return () => {
             axios.delete(`/api/articles/`+encodeURIComponent(slug)+`/comments/${id}`).then(() => {
-                data = axios.get(`/api/articles/`+encodeURIComponent(slug)+`/comments`).then(res => res.data);
+                for (let i = 0; i < $commentArr.length; i++) {
+                    if($commentArr[i].id === id){
+                        $commentArr.splice(i,1);
+                        commentArr.set($commentArr);
+                        break;
+                    }
+                }
             });
         }
     }
@@ -56,13 +69,13 @@
             </p>
         {/if}
 
-        {#await data}
+        {#await $commentArr}
             <div class="article-preview">
                 Loading comments...
             </div>
-        {:then data}
-            {#if data.comments.length != 0}
-                {#each data.comments as comment}
+        {:then $commentArr}
+            {#if $commentArr.length !== 0}
+                {#each $commentArr as comment}
                     <Comment bind:comment={comment} deleteComment="{deleteComment}"/>
                 {/each}
             {:else}
